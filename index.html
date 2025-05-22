@@ -45,7 +45,7 @@
     }
 
     .image-card:hover {
-      transform: scale(1.015);
+      transform: scale(1.025);
       box-shadow: 0 0 20px 6px var(--glow-color, #00f);
       z-index: 10;              /* hover above neighbors */
     }
@@ -139,7 +139,7 @@
       }
 
       card.style.setProperty('--glow-color', `rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.8)`);
-      card.style.boxShadow = `0 0 1px 0px rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.6)`;
+      card.style.boxShadow = `0 0 8px 4px rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.6)`;
     };
   }
 
