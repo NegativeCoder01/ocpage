@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
   <style>
+    <hr>
     /* Page setup */
     html, body {
       margin: 0;
@@ -18,13 +19,6 @@
       padding: 20px;
       box-sizing: border-box;
       overflow-x: hidden; /* prevent horizontal scroll */
-    }
-
-    /* Divider style */
-    hr {
-      width: 100%; /* Full width */
-      border: 1px solid #000; /* Black color */
-      margin: 0; /* Remove default margin */
     }
 
     /* Container for all cards */
@@ -91,8 +85,6 @@
 </head>
 <body>
 
-<hr> <!-- Divider added here -->
-
 <div class="card-container">
 
   <!-- Card 1 -->
@@ -110,4 +102,54 @@
     <img id="main-img-2" class="main-img" src="https://raw.githubusercontent.com/NegativeCoder01/oc/refs/heads/main/pykneverlong.png" alt="Main Image" />
     <div class="overlay-text">Another Name</div>
 
-    <
+    <img src="https://via.placeholder.com/32/00ff00" class="icon top-left" onerror="this.style.display='none'" />
+    <img src="https://via.placeholder.com/32/0000ff" class="icon top-right" onerror="this.style.display='none'" />
+    <img src="" class="icon bottom-right" onerror="this.style.display='none'" />
+  </a>
+
+  <!-- Add more cards here -->
+
+</div>
+
+<script>
+  // Function to get dominant color and apply glow for all cards
+  function applyGlow(cardId, imgId) {
+    const mainImg = document.getElementById(imgId);
+    const card = document.getElementById(cardId);
+
+    mainImg.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = mainImg.naturalWidth;
+      canvas.height = mainImg.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(mainImg, 0, 0);
+
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const colorCount = {};
+      let max = 0, dominant = [255, 255, 255];
+
+      for (let i = 0; i < data.length; i += 4) {
+        const alpha = data[i + 3];
+        if (alpha < 128) continue; // ignore mostly transparent pixels
+        const key = `${data[i]},${data[i+1]},${data[i+2]}`;
+        colorCount[key] = (colorCount[key] || 0) + 1;
+        if (colorCount[key] > max) {
+          max = colorCount[key];
+          dominant = [data[i], data[i+1], data[i+2]];
+        }
+      }
+
+      card.style.setProperty('--glow-color', `rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.8)`);
+      card.style.boxShadow = `0 0 10px 4px rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.6)`;
+    };
+  }
+
+  // Apply glow for all cards
+  applyGlow('glow-card-1', 'main-img-1');
+  applyGlow('glow-card-2', 'main-img-2');
+  // Add calls for more cards here if you add more
+
+</script>
+
+</body>
+</html>
