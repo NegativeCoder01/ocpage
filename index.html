@@ -6,30 +6,25 @@
   <style>
     html, body {
       margin: 0;
-      padding: 20px 0 0 0;       /* Add padding at top to avoid clipping */
-      background: #FFFFFF00;     /* Transparent background */
+      padding: 0;
+      overflow: hidden;
+      background: #FFFFFF00;
       height: 100%;
       width: 100%;
       font-family: 'Fredoka', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow-x: hidden;
-      overflow-y: auto;
     }
 
-    /* Container that holds all cards and wraps them */
     .card-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
       justify-content: center;
-      position: relative;
-      overflow: visible;
-      z-index: 0;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      height: 100%;
+      box-sizing: border-box;
     }
 
-    /* The card itself */
     .image-card {
       position: relative;
       width: 250px;
@@ -38,14 +33,14 @@
       overflow: hidden;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
-      box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.1); /* fallback light glow */
-      z-index: 1;
+      box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.1);
+      background: transparent;
+      flex-shrink: 0;
     }
 
     .image-card:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 20px 6px var(--glow-color, #00f);
-      z-index: 10; /* bring on top during hover */
+      z-index: 1;
     }
 
     .image-card img.main-img {
@@ -54,6 +49,8 @@
       object-fit: cover;
       display: block;
       border-radius: 16px;
+      position: relative;
+      z-index: 0;
     }
 
     .overlay-text {
@@ -64,6 +61,7 @@
       font-size: 1em;
       font-weight: bold;
       text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      z-index: 2;
     }
 
     .icon {
@@ -72,6 +70,7 @@
       height: 32px;
       border-radius: 8px;
       object-fit: cover;
+      z-index: 2;
     }
 
     .top-left { top: 8px; left: 8px; }
@@ -80,61 +79,51 @@
   </style>
 </head>
 <body>
+  <div class="card-container">
+    <!-- Repeat this <a> block for multiple cards -->
+    <a href="https://your-link.com" class="image-card" id="glow-card-1">
+      <img id="main-img-1" class="main-img" src="https://raw.githubusercontent.com/NegativeCoder01/oc/refs/heads/main/pykneverlong.png" alt="Main Image" />
+      <div class="overlay-text">Pyk Eller</div>
+      <img src="https://via.placeholder.com/32" class="icon top-left" onerror="this.style.display='none'" />
+      <img src="" class="icon top-right" onerror="this.style.display='none'" />
+      <img src="https://via.placeholder.com/32/ff4444" class="icon bottom-right" onerror="this.style.display='none'" />
+    </a>
+  </div>
 
-<div class="card-container">
+  <script>
+    function applyGlow(imgId, cardId) {
+      const mainImg = document.getElementById(imgId);
+      const card = document.getElementById(cardId);
 
-  <!-- CARD 1 -->
-  <a href="https://your-link.com" class="image-card" id="glow-card-1">
-    <img id="main-img-1" class="main-img" src="https://raw.githubusercontent.com/NegativeCoder01/oc/refs/heads/main/pykneverlong.png" alt="Main Image" />
-    <div class="overlay-text">Pyk Eller</div>
+      mainImg.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = mainImg.naturalWidth;
+        canvas.height = mainImg.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(mainImg, 0, 0);
 
-    <!-- Small icons, optional -->
-    <img src="https://via.placeholder.com/32" class="icon top-left" onerror="this.style.display='none'" />
-    <img src="" class="icon top-right" onerror="this.style.display='none'" />
-    <img src="https://via.placeholder.com/32/ff4444" class="icon bottom-right" onerror="this.style.display='none'" />
-  </a>
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const colorCount = {};
+        let max = 0, dominant = [255, 255, 255];
 
-  <!-- CARD 2 (copy and customize as needed) -->
-  <!-- <a href="..." class="image-card" id="glow-card-2"> ... </a> -->
-
-</div>
-
-<script>
-  function applyGlow(cardId, imgId) {
-    const mainImg = document.getElementById(imgId);
-    const card = document.getElementById(cardId);
-
-    mainImg.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = mainImg.naturalWidth;
-      canvas.height = mainImg.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(mainImg, 0, 0);
-
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      const colorCount = {};
-      let max = 0, dominant = [255, 255, 255];
-
-      for (let i = 0; i < data.length; i += 4) {
-        const alpha = data[i + 3];
-        if (alpha < 128) continue;
-        const key = `${data[i]},${data[i+1]},${data[i+2]}`;
-        colorCount[key] = (colorCount[key] || 0) + 1;
-        if (colorCount[key] > max) {
-          max = colorCount[key];
-          dominant = [data[i], data[i+1], data[i+2]];
+        for (let i = 0; i < data.length; i += 4) {
+          const alpha = data[i + 3];
+          if (alpha < 128) continue;
+          const key = `${data[i]},${data[i+1]},${data[i+2]}`;
+          colorCount[key] = (colorCount[key] || 0) + 1;
+          if (colorCount[key] > max) {
+            max = colorCount[key];
+            dominant = [data[i], data[i+1], data[i+2]];
+          }
         }
-      }
 
-      card.style.setProperty('--glow-color', `rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.8)`);
-      card.style.boxShadow = `0 0 10px 4px rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.6)`;
-    };
-  }
+        const glowColor = `rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.7)`;
+        card.style.boxShadow = `0 0 20px 6px ${glowColor}`;
+      };
+    }
 
-  // Apply to each card
-  applyGlow('glow-card-1', 'main-img-1');
-  // applyGlow('glow-card-2', 'main-img-2'); // for more cards
-</script>
-
+    // Call this function for each card
+    applyGlow("main-img-1", "glow-card-1");
+  </script>
 </body>
 </html>
