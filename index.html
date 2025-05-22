@@ -4,27 +4,33 @@
   <meta charset="UTF-8" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
   <style>
+    /* Page setup */
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: #FFFFFF00;
+      background: #FFFFFF00;   /* fully transparent */
+      font-family: 'Fredoka', sans-serif;
       height: 100%;
       width: 100%;
-      font-family: 'Fredoka', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* start at top */
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-x: hidden; /* prevent horizontal scroll */
     }
 
+    /* Container for all cards */
     .card-container {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      padding: 20px;
-      height: 100%;
-      box-sizing: border-box;
+      flex-wrap: wrap;          /* wrap cards to next line */
+      gap: 20px;                /* space between cards */
+      justify-content: center;  /* center cards in each row */
+      max-width: 1000px;        /* optional max width for container */
+      width: 100%;
     }
 
+    /* Individual card */
     .image-card {
       position: relative;
       width: 250px;
@@ -32,15 +38,16 @@
       border-radius: 16px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background: transparent;
-      flex-shrink: 0;
-      z-index: 0;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;           /* don’t shrink below 250px */
+      background: #222;         /* just to see card edges on transparent bg */
     }
 
     .image-card:hover {
       transform: scale(1.05);
-      z-index: 2;
+      box-shadow: 0 0 20px 6px var(--glow-color, #00f);
+      z-index: 10;              /* hover above neighbors */
     }
 
     .image-card img.main-img {
@@ -49,8 +56,6 @@
       object-fit: cover;
       display: block;
       border-radius: 16px;
-      z-index: 1;
-      position: relative;
     }
 
     .overlay-text {
@@ -61,7 +66,7 @@
       font-size: 1em;
       font-weight: bold;
       text-shadow: 0 0 5px rgba(0,0,0,0.7);
-      z-index: 3;
+      user-select: none; /* no text selection on hover */
     }
 
     .icon {
@@ -70,7 +75,6 @@
       height: 32px;
       border-radius: 8px;
       object-fit: cover;
-      z-index: 3;
     }
 
     .top-left { top: 8px; left: 8px; }
@@ -79,57 +83,72 @@
   </style>
 </head>
 <body>
-  <div class="card-container">
-    <a href="https://your-link.com" class="image-card" id="glow-card-1">
-      <img id="main-img-1" class="main-img" src="https://raw.githubusercontent.com/NegativeCoder01/oc/refs/heads/main/pykneverlong.png" alt="Main Image" />
-      <div class="overlay-text">Pyk Eller</div>
-      <img src="https://via.placeholder.com/32" class="icon top-left" onerror="this.style.display='none'" />
-      <img src="" class="icon top-right" onerror="this.style.display='none'" />
-      <img src="https://via.placeholder.com/32/ff4444" class="icon bottom-right" onerror="this.style.display='none'" />
-    </a>
-  </div>
 
-  <script>
-    function applyGlow(imgId, cardId) {
-      const mainImg = document.getElementById(imgId);
-      const card = document.getElementById(cardId);
+<div class="card-container">
 
-      mainImg.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = mainImg.naturalWidth;
-        canvas.height = mainImg.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(mainImg, 0, 0);
+  <!-- Card 1 -->
+  <a href="https://your-link.com" class="image-card" id="glow-card-1">
+    <img id="main-img-1" class="main-img" src="https://raw.githubusercontent.com/NegativeCoder01/oc/refs/heads/main/pykneverlong.png" alt="Main Image" />
+    <div class="overlay-text">Pyk Eller</div>
 
-        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-        const colorCount = {};
-        let max = 0, dominant = [255, 255, 255];
+    <img src="https://via.placeholder.com/32" class="icon top-left" onerror="this.style.display='none'" />
+    <img src="" class="icon top-right" onerror="this.style.display='none'" />
+    <img src="https://via.placeholder.com/32/ff4444" class="icon bottom-right" onerror="this.style.display='none'" />
+  </a>
 
-        for (let i = 0; i < data.length; i += 4) {
-          const alpha = data[i + 3];
-          if (alpha < 128) continue;
-          const key = `${data[i]},${data[i+1]},${data[i+2]}`;
-          colorCount[key] = (colorCount[key] || 0) + 1;
-          if (colorCount[key] > max) {
-            max = colorCount[key];
-            dominant = [data[i], data[i+1], data[i+2]];
-          }
+  <!-- Card 2 -->
+  <a href="https://example.com" class="image-card" id="glow-card-2">
+    <img id="main-img-2" class="main-img" src="https://raw.githubusercontent.com/NegativeCoder01/oc/refs/heads/main/pykneverlong.png" alt="Main Image" />
+    <div class="overlay-text">Another Name</div>
+
+    <img src="https://via.placeholder.com/32/00ff00" class="icon top-left" onerror="this.style.display='none'" />
+    <img src="https://via.placeholder.com/32/0000ff" class="icon top-right" onerror="this.style.display='none'" />
+    <img src="" class="icon bottom-right" onerror="this.style.display='none'" />
+  </a>
+
+  <!-- Add more cards here -->
+
+</div>
+
+<script>
+  // Function to get dominant color and apply glow for all cards
+  function applyGlow(cardId, imgId) {
+    const mainImg = document.getElementById(imgId);
+    const card = document.getElementById(cardId);
+
+    mainImg.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = mainImg.naturalWidth;
+      canvas.height = mainImg.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(mainImg, 0, 0);
+
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const colorCount = {};
+      let max = 0, dominant = [255, 255, 255];
+
+      for (let i = 0; i < data.length; i += 4) {
+        const alpha = data[i + 3];
+        if (alpha < 128) continue; // ignore mostly transparent pixels
+        const key = `${data[i]},${data[i+1]},${data[i+2]}`;
+        colorCount[key] = (colorCount[key] || 0) + 1;
+        if (colorCount[key] > max) {
+          max = colorCount[key];
+          dominant = [data[i], data[i+1], data[i+2]];
         }
+      }
 
-        const glowColor = `rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.7)`;
+      card.style.setProperty('--glow-color', `rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.8)`);
+      card.style.boxShadow = `0 0 10px 4px rgba(${dominant[0]}, ${dominant[1]}, ${dominant[2]}, 0.6)`;
+    };
+  }
 
-        // Set glow on hover
-        const style = document.createElement('style');
-        style.textContent = `
-          #${cardId}:hover {
-            box-shadow: 0 0 20px 6px ${glowColor};
-          }
-        `;
-        document.head.appendChild(style);
-      };
-    }
+  // Apply glow for all cards
+  applyGlow('glow-card-1', 'main-img-1');
+  applyGlow('glow-card-2', 'main-img-2');
+  // Add calls for more cards here if you add more
 
-    applyGlow("main-img-1", "glow-card-1");
-  </script>
+</script>
+
 </body>
 </html>
